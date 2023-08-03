@@ -1,5 +1,5 @@
 import  mariadb from 'mariadb';
-
+import mysql from 'mysql'
 const pool = mariadb.createPool({
     host: 'localhost', 
     user:'root', 
@@ -8,26 +8,27 @@ const pool = mariadb.createPool({
     port: 3306,
     database: 'itaystoredb'
 });
-pool.getConnection()
-   .then(conn => {
-   
-     conn.query("SELECT * from products")
-       .then((rows) => {
-         console.log(rows); //[ {val: 1}, meta: ... ]
-         //Table must have been created before 
-         // " CREATE TABLE myTable (id int, val varchar(255)) "
-        //  return conn.query("INSERT INTO myTable value (?, ?)", [1, "mariadb"]);
-       })
-       .then((res) => {
-         console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
-         conn.end();
-       })
-       .catch(err => {
-         //handle error
-         console.log(err); 
-         conn.end();
-       })
-       
-   }).catch(err => {
-     //not connected
-   });
+
+async function executeQuery(sqlQuery){
+    let conn = null
+    try{
+    conn = await pool.getConnection()
+    return await conn.query(sqlQuery)
+    }
+    catch(err){
+        console.log(err)
+    }
+    finally{
+        if(conn){
+            conn.end(); 
+        }
+        
+    }
+
+}
+
+export async function getProduct(partialString){
+    return await executeQuery(`select * from products where ProductName like '%${partialString}%'`)
+}
+console.log(mysql.escape(''))
+getProduct('cla')
