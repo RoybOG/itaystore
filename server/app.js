@@ -1,9 +1,13 @@
 import express from "express";
-import { getProduct } from "./DB/DBConfig.js";
+import { getProduct,getAllProductNames } from "./DB/DBConfig.js";
 
 const app = express()
 app.get('/',(req,res)=>{
     res.send('howdy hacker')
+})
+app.get('/getAllProductNames/',async (req,res)=>{
+    const productNames = await getAllProductNames()
+    res.send(productNames)
 })
 app.get('/getProduct/:userStr',async (req,res)=>{
     const userStr = req.params.userStr

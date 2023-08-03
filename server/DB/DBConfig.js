@@ -9,6 +9,9 @@ const pool = mariadb.createPool({
     database: 'itaystoredb'
 });
 
+
+
+
 async function executeQuery(sqlQuery){
     let conn = null
     try{
@@ -26,7 +29,9 @@ async function executeQuery(sqlQuery){
     }
 
 }
-
+export async function getAllProductNames(){
+    return await executeQuery(`select ProductName from products`)
+}
 export async function getProduct(partialString){
     return await executeQuery(`select * from products where ProductName like '%${partialString}%'`)
 }
